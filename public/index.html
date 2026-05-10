@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Documentation Generator | Syed Abdul Raffay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen text-white">
+  
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <div class="inline-block bg-blue-500/20 px-4 py-2 rounded-full text-sm font-mono text-blue-300 mb-4">
+        <i class="fas fa-robot mr-2"></i>AI-Powered Automation
+      </div>
+      <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        AI Documentation Generator
+      </h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        Upload your API route files and get instant OpenAPI/Swagger documentation. 
+        <span class="text-blue-400 font-semibold">Reduces documentation time from 4 hours to 20 minutes.</span>
+      </p>
+      <div class="mt-4 text-sm text-gray-400">
+        Built by <a href="https://abdul-raffay-portfolio.web.app" target="_blank" class="text-blue-400 hover:underline">Syed Abdul Raffay</a>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        <div class="text-3xl font-bold text-blue-400 mb-2">92%</div>
+        <div class="text-gray-300">Time Saved</div>
+        <div class="text-xs text-gray-500 mt-1">4 hours → 20 minutes</div>
+      </div>
+      <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        <div class="text-3xl font-bold text-purple-400 mb-2">GPT-4</div>
+        <div class="text-gray-300">AI Model</div>
+        <div class="text-xs text-gray-500 mt-1">OpenAI API</div>
+      </div>
+      <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        <div class="text-3xl font-bold text-green-400 mb-2">100%</div>
+        <div class="text-gray-300">OpenAPI 3.0</div>
+        <div class="text-xs text-gray-500 mt-1">Spec Compliant</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Upload Section -->
+      <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <i class="fas fa-upload mr-3 text-blue-400"></i>
+          Upload Route File
+        </h2>
+        
+        <div id="dropZone" class="border-2 border-dashed border-blue-500/50 rounded-xl p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-500/5 transition-all">
+          <i class="fas fa-cloud-upload-alt text-6xl text-blue-400 mb-4"></i>
+          <p class="text-lg mb-2">Drop your route file here</p>
+          <p class="text-sm text-gray-400 mb-4">or click to browse</p>
+          <input type="file" id="fileInput" class="hidden" accept=".js,.ts,.jsx,.tsx,.py">
+          <button onclick="document.getElementById('fileInput').click()" class="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded-lg font-semibold transition-colors">
+            Choose File
+          </button>
+        </div>
+
+        <div id="fileInfo" class="hidden mt-4 p-4 bg-blue-500/10 rounded-lg border border-blue-500/30">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <i class="fas fa-file-code text-blue-400 mr-3"></i>
+              <span id="fileName" class="font-mono text-sm"></span>
+            </div>
+            <button onclick="clearFile()" class="text-red-400 hover:text-red-300">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <button id="generateBtn" onclick="generateDocs()" disabled class="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed px-8 py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 disabled:hover:scale-100">
+          <i class="fas fa-magic mr-2"></i>
+          Generate Documentation
+        </button>
+
+        <div id="loading" class="hidden mt-6 text-center">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <p class="mt-4 text-gray-300">AI is analyzing your code...</p>
+        </div>
+      </div>
+
+      <!-- Output Section -->
+      <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+        <h2 class="text-2xl font-bold mb-6 flex items-center justify-between">
+          <span>
+            <i class="fas fa-file-alt mr-3 text-green-400"></i>
+            Generated Documentation
+          </span>
+          <button id="downloadBtn" onclick="downloadYaml()" class="hidden bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+            <i class="fas fa-download mr-2"></i>Download
+          </button>
+        </h2>
+
+        <div id="output" class="bg-gray-900/50 rounded-xl p-6 font-mono text-sm overflow-auto max-h-[600px] border border-gray-700">
+          <div class="text-gray-500 text-center py-12">
+            <i class="fas fa-code text-4xl mb-4"></i>
+            <p>Your OpenAPI documentation will appear here</p>
+          </div>
+        </div>
+
+        <div id="stats" class="hidden mt-6 grid grid-cols-2 gap-4">
+          <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+            <div class="text-xs text-gray-400 mb-1">Tokens Used</div>
+            <div id="tokensUsed" class="text-lg font-bold text-blue-400">-</div>
+          </div>
+          <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+            <div class="text-xs text-gray-400 mb-1">Generated At</div>
+            <div id="generatedAt" class="text-lg font-bold text-purple-400">-</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- How It Works -->
+    <div class="mt-16 bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
+      <h2 class="text-2xl font-bold mb-8 text-center">
+        <i class="fas fa-cogs mr-3 text-yellow-400"></i>
+        How It Works
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-upload text-2xl text-blue-400"></i>
+          </div>
+          <h3 class="font-bold mb-2">1. Upload</h3>
+          <p class="text-sm text-gray-400">Upload your API route file (JS, TS, Python)</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-brain text-2xl text-purple-400"></i>
+          </div>
+          <h3 class="font-bold mb-2">2. AI Analysis</h3>
+          <p class="text-sm text-gray-400">GPT-4 analyzes routes and parameters</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-file-code text-2xl text-green-400"></i>
+          </div>
+          <h3 class="font-bold mb-2">3. Generate</h3>
+          <p class="text-sm text-gray-400">Creates OpenAPI 3.0 YAML specification</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-download text-2xl text-yellow-400"></i>
+          </div>
+          <h3 class="font-bold mb-2">4. Download</h3>
+          <p class="text-sm text-gray-400">Download ready-to-use Swagger docs</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
